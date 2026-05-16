@@ -1,0 +1,1353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MediCare Patient Portal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Serif+Display&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --navy-950: #030b18;
+    --navy-900: #060e1a;
+    --navy-800: #0a1628;
+    --navy-700: #0d1f3c;
+    --navy-600: #122952;
+    --navy-500: #1e3a5f;
+    --navy-400: #2a4f7c;
+    --navy-300: #3a6fa8;
+    --blue-500: #2563eb;
+    --blue-400: #3b82f6;
+    --blue-300: #60a5fa;
+    --blue-200: #93c5fd;
+    --white: #ffffff;
+    --text-primary: #f0f6ff;
+    --text-secondary: #7ea8d4;
+    --text-muted: #3d6287;
+    --border: #1e3a5f;
+    --border-light: #152d4a;
+    --green: #34d399;
+    --green-bg: #0a2e1f;
+    --amber: #fbbf24;
+    --amber-bg: #2d1f05;
+    --red: #f87171;
+    --red-bg: #2d0a0a;
+    --sidebar-w: 220px;
+    --topbar-h: 60px;
+    --radius: 10px;
+    --radius-sm: 6px;
+  }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--navy-900);
+    color: var(--text-primary);
+    height: 100vh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* ── LAYOUT ── */
+  .app { display: flex; height: 100vh; overflow: hidden; }
+
+  /* ── SIDEBAR ── */
+  .sidebar {
+    width: var(--sidebar-w);
+    background: var(--navy-950);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+    overflow-y: auto;
+  }
+  .sidebar-brand {
+    padding: 20px 20px 18px;
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; gap: 12px;
+  }
+  .brand-icon {
+    width: 36px; height: 36px;
+    background: var(--blue-500);
+    border-radius: 9px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px; color: #fff;
+  }
+  .brand-text { line-height: 1.2; }
+  .brand-name { font-size: 13px; font-weight: 600; color: var(--text-primary); }
+  .brand-sub { font-size: 10px; color: var(--text-muted); }
+
+  .nav-section-label {
+    font-size: 9px; font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase; letter-spacing: 0.12em;
+    padding: 16px 20px 6px;
+  }
+  .nav-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 9px 20px;
+    font-size: 13px; color: var(--text-secondary);
+    cursor: pointer;
+    border-left: 2px solid transparent;
+    transition: all 0.15s ease;
+    border-radius: 0;
+    user-select: none;
+  }
+  .nav-item:hover { color: var(--text-primary); background: rgba(37,99,235,0.06); }
+  .nav-item.active {
+    color: var(--white);
+    background: rgba(37,99,235,0.12);
+    border-left-color: var(--blue-500);
+  }
+  .nav-item i { font-size: 16px; width: 18px; }
+  .nav-badge {
+    margin-left: auto;
+    background: var(--blue-500);
+    color: #fff; font-size: 9px; font-weight: 600;
+    border-radius: 99px; padding: 2px 6px;
+  }
+
+  /* ── MAIN ── */
+  .main { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+
+  /* ── TOPBAR ── */
+  .topbar {
+    height: var(--topbar-h);
+    background: var(--navy-800);
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 24px;
+    flex-shrink: 0;
+  }
+  .topbar-left { display: flex; align-items: center; gap: 12px; }
+  .page-title { font-size: 15px; font-weight: 500; color: var(--text-primary); }
+  .breadcrumb { font-size: 12px; color: var(--text-muted); }
+  .topbar-right { display: flex; align-items: center; gap: 16px; }
+  .icon-btn {
+    width: 34px; height: 34px;
+    border-radius: var(--radius-sm);
+    background: var(--navy-700);
+    border: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; color: var(--text-secondary); font-size: 16px;
+    position: relative;
+    transition: all 0.15s;
+  }
+  .icon-btn:hover { color: var(--text-primary); border-color: var(--navy-400); }
+  .notif-dot {
+    position: absolute; top: 6px; right: 6px;
+    width: 7px; height: 7px; border-radius: 50%;
+    background: var(--blue-500);
+    border: 1.5px solid var(--navy-800);
+  }
+  .avatar-btn {
+    width: 34px; height: 34px; border-radius: 50%;
+    background: var(--blue-500);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 600; color: #fff;
+    cursor: pointer;
+  }
+
+  /* ── CONTENT AREA ── */
+  .content-area {
+    flex: 1; overflow-y: auto;
+    padding: 24px;
+    background: var(--navy-800);
+  }
+
+  /* ── PAGE (shown/hidden) ── */
+  .page { display: none; animation: fadeIn 0.2s ease; }
+  .page.active { display: block; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+
+  /* ── STAT CARDS ── */
+  .stat-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 24px; }
+  .stat-card {
+    background: var(--navy-700);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 16px 18px;
+    display: flex; flex-direction: column; gap: 6px;
+    transition: border-color 0.15s;
+  }
+  .stat-card:hover { border-color: var(--navy-400); }
+  .stat-top { display: flex; align-items: center; justify-content: space-between; }
+  .stat-label { font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.06em; }
+  .stat-icon { width: 30px; height: 30px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 15px; }
+  .stat-icon.blue { background: rgba(37,99,235,0.15); color: var(--blue-300); }
+  .stat-icon.green { background: var(--green-bg); color: var(--green); }
+  .stat-icon.amber { background: var(--amber-bg); color: var(--amber); }
+  .stat-icon.red { background: var(--red-bg); color: var(--red); }
+  .stat-value { font-size: 28px; font-weight: 600; color: var(--text-primary); line-height: 1; }
+  .stat-sub { font-size: 11px; color: var(--blue-300); }
+
+  /* ── SECTION HEADER ── */
+  .section-hd { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+  .section-title { font-size: 13px; font-weight: 600; color: var(--text-primary); }
+  .link-btn {
+    font-size: 11px; color: var(--blue-400);
+    background: none; border: none; cursor: pointer;
+    padding: 0;
+  }
+  .link-btn:hover { color: var(--blue-300); }
+
+  /* ── GRID LAYOUTS ── */
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .three-col { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+
+  /* ── CARD ── */
+  .card {
+    background: var(--navy-700);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 18px;
+  }
+
+  /* ── TABLE ── */
+  .table-wrap {
+    background: var(--navy-700);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+  table { width: 100%; border-collapse: collapse; }
+  thead tr { background: var(--navy-900); }
+  thead th {
+    font-size: 10px; font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase; letter-spacing: 0.08em;
+    padding: 11px 16px; text-align: left;
+  }
+  tbody tr { border-top: 1px solid var(--border-light); transition: background 0.12s; }
+  tbody tr:hover { background: rgba(37,99,235,0.04); }
+  tbody td { padding: 11px 16px; font-size: 12px; color: var(--text-secondary); }
+  td.td-name { color: var(--text-primary); font-weight: 500; }
+
+  /* ── CHIPS ── */
+  .chip {
+    display: inline-block;
+    font-size: 10px; font-weight: 500;
+    border-radius: 99px; padding: 3px 9px;
+  }
+  .chip-green { background: var(--green-bg); color: var(--green); }
+  .chip-amber { background: var(--amber-bg); color: var(--amber); }
+  .chip-red { background: var(--red-bg); color: var(--red); }
+  .chip-blue { background: rgba(37,99,235,0.15); color: var(--blue-300); border: 1px solid rgba(37,99,235,0.25); }
+  .chip-gray { background: rgba(255,255,255,0.05); color: var(--text-secondary); border: 1px solid var(--border); }
+
+  /* ── BUTTONS ── */
+  .btn-primary {
+    background: var(--blue-500); color: #fff;
+    border: none; border-radius: var(--radius-sm);
+    padding: 9px 18px; font-size: 12px; font-weight: 500;
+    cursor: pointer; font-family: inherit;
+    transition: background 0.15s, transform 0.1s;
+  }
+  .btn-primary:hover { background: var(--blue-400); }
+  .btn-primary:active { transform: scale(0.98); }
+  .btn-ghost {
+    background: transparent; color: var(--text-secondary);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 8px 16px; font-size: 12px; font-weight: 500;
+    cursor: pointer; font-family: inherit;
+    transition: all 0.15s;
+  }
+  .btn-ghost:hover { color: var(--text-primary); border-color: var(--navy-400); }
+  .btn-danger {
+    background: var(--red-bg); color: var(--red);
+    border: 1px solid rgba(248,113,113,0.2);
+    border-radius: var(--radius-sm);
+    padding: 8px 16px; font-size: 12px; font-weight: 500;
+    cursor: pointer; font-family: inherit;
+    transition: all 0.15s;
+  }
+
+  /* ── TABS ── */
+  .tab-bar { display: flex; border-bottom: 1px solid var(--border); margin-bottom: 16px; gap: 0; }
+  .tab {
+    font-size: 12px; padding: 9px 16px;
+    color: var(--text-muted);
+    border-bottom: 2px solid transparent;
+    cursor: pointer; transition: all 0.15s;
+  }
+  .tab:hover { color: var(--text-secondary); }
+  .tab.active { color: var(--blue-400); border-bottom-color: var(--blue-500); }
+
+  /* ── FORMS ── */
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .form-grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; }
+  .form-full { grid-column: span 2; }
+  .form-group { display: flex; flex-direction: column; gap: 5px; }
+  .form-label { font-size: 11px; color: var(--text-muted); font-weight: 500; }
+  .form-input {
+    background: var(--navy-900);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 9px 12px;
+    font-size: 12px; color: var(--text-primary);
+    font-family: inherit;
+    transition: border-color 0.15s;
+    outline: none;
+  }
+  .form-input:focus { border-color: var(--blue-500); }
+  .form-input::placeholder { color: var(--text-muted); }
+  select.form-input option { background: var(--navy-800); }
+  .form-actions { display: flex; gap: 10px; margin-top: 6px; }
+
+  /* ── APPOINTMENT LIST ── */
+  .appt-list { display: flex; flex-direction: column; gap: 0; }
+  .appt-item {
+    display: flex; align-items: center; gap: 12px;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--border-light);
+  }
+  .appt-item:last-child { border-bottom: none; }
+  .appt-dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
+  .appt-dot.blue { background: var(--blue-500); }
+  .appt-dot.amber { background: var(--amber); }
+  .appt-dot.green { background: var(--green); }
+  .appt-info { flex: 1; }
+  .appt-name { font-size: 12px; font-weight: 500; color: var(--text-primary); }
+  .appt-sub { font-size: 10px; color: var(--text-muted); margin-top: 1px; }
+  .appt-time { font-size: 11px; color: var(--blue-300); white-space: nowrap; }
+
+  /* ── RX ITEMS ── */
+  .rx-list { display: flex; flex-direction: column; }
+  .rx-item { display: flex; align-items: flex-start; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--border-light); }
+  .rx-item:last-child { border-bottom: none; }
+  .rx-icon {
+    width: 34px; height: 34px; border-radius: 8px;
+    background: rgba(37,99,235,0.1);
+    border: 1px solid rgba(37,99,235,0.2);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 15px; color: var(--blue-300); flex-shrink: 0;
+  }
+  .rx-body { flex: 1; }
+  .rx-name { font-size: 12px; font-weight: 500; color: var(--text-primary); }
+  .rx-meta { font-size: 10px; color: var(--text-muted); margin-top: 2px; }
+  .rx-dates { font-size: 10px; color: var(--blue-300); margin-top: 3px; }
+  .progress-bar { height: 3px; border-radius: 99px; background: var(--navy-600); margin-top: 6px; overflow: hidden; }
+  .progress-fill { height: 100%; border-radius: 99px; background: var(--blue-500); }
+
+  /* ── TIMELINE ── */
+  .timeline { display: flex; flex-direction: column; gap: 0; }
+  .tl-item { display: flex; gap: 14px; padding-bottom: 18px; position: relative; }
+  .tl-item::after { content: ''; position: absolute; left: 15px; top: 30px; bottom: 0; width: 1px; background: var(--border); }
+  .tl-item:last-child::after { display: none; }
+  .tl-dot {
+    width: 30px; height: 30px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px; flex-shrink: 0;
+    border: 1.5px solid;
+    margin-top: 2px;
+  }
+  .tl-dot.blue { background: rgba(37,99,235,0.12); border-color: var(--blue-500); color: var(--blue-300); }
+  .tl-dot.red { background: var(--red-bg); border-color: rgba(248,113,113,0.4); color: var(--red); }
+  .tl-dot.amber { background: var(--amber-bg); border-color: rgba(251,191,36,0.4); color: var(--amber); }
+  .tl-dot.green { background: var(--green-bg); border-color: rgba(52,211,153,0.4); color: var(--green); }
+  .tl-body { flex: 1; padding-top: 4px; }
+  .tl-title { font-size: 12px; font-weight: 500; color: var(--text-primary); }
+  .tl-meta { font-size: 10px; color: var(--text-muted); margin-top: 3px; }
+  .tl-notes { font-size: 11px; color: var(--text-secondary); margin-top: 5px; background: var(--navy-900); border-radius: var(--radius-sm); padding: 7px 10px; border: 1px solid var(--border-light); }
+
+  /* ── PROFILE ── */
+  .profile-hero {
+    background: var(--navy-700);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 22px;
+    margin-bottom: 16px;
+    display: flex; align-items: center; gap: 18px;
+  }
+  .big-avatar {
+    width: 56px; height: 56px; border-radius: 50%;
+    background: var(--blue-500);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px; font-weight: 600; color: #fff;
+    border: 2px solid rgba(37,99,235,0.4);
+    flex-shrink: 0;
+  }
+  .profile-name { font-size: 18px; font-weight: 600; color: var(--text-primary); }
+  .profile-role { font-size: 12px; color: var(--text-muted); margin-top: 3px; }
+  .profile-chips { display: flex; gap: 6px; margin-top: 8px; }
+
+  .info-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+  .info-item { display: flex; flex-direction: column; gap: 3px; }
+  .info-item label { font-size: 10px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.06em; }
+  .info-item span { font-size: 12px; color: var(--text-secondary); }
+
+  /* ── MODAL ── */
+  .modal-backdrop {
+    position: fixed; inset: 0;
+    background: rgba(3,11,24,0.75);
+    display: flex; align-items: center; justify-content: center;
+    z-index: 100; opacity: 0; pointer-events: none;
+    transition: opacity 0.2s;
+  }
+  .modal-backdrop.open { opacity: 1; pointer-events: all; }
+  .modal {
+    background: var(--navy-800);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 28px;
+    width: 520px; max-width: 95vw;
+    max-height: 85vh; overflow-y: auto;
+    transform: translateY(12px);
+    transition: transform 0.2s;
+  }
+  .modal-backdrop.open .modal { transform: translateY(0); }
+  .modal-hd { display: flex; align-items: center; justify-content: space-between; margin-bottom: 22px; }
+  .modal-title { font-size: 15px; font-weight: 600; color: var(--text-primary); }
+  .close-btn { background: none; border: none; color: var(--text-muted); font-size: 20px; cursor: pointer; line-height: 1; }
+  .close-btn:hover { color: var(--text-primary); }
+
+  /* ── SEARCH BAR ── */
+  .search-wrap { position: relative; margin-bottom: 16px; }
+  .search-icon { position: absolute; left: 11px; top: 50%; transform: translateY(-50%); color: var(--text-muted); font-size: 15px; pointer-events: none; }
+  .search-input {
+    width: 100%;
+    background: var(--navy-900);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 9px 12px 9px 34px;
+    font-size: 12px; color: var(--text-primary);
+    font-family: inherit; outline: none;
+    transition: border-color 0.15s;
+  }
+  .search-input:focus { border-color: var(--blue-500); }
+  .search-input::placeholder { color: var(--text-muted); }
+
+  /* ── EMPTY STATE ── */
+  .empty-state { text-align: center; padding: 40px; color: var(--text-muted); }
+  .empty-state i { font-size: 40px; display: block; margin-bottom: 12px; color: var(--navy-400); }
+  .empty-state p { font-size: 13px; }
+
+  /* ── SCROLLBAR ── */
+  ::-webkit-scrollbar { width: 5px; height: 5px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--navy-500); border-radius: 99px; }
+
+  /* ── TOAST ── */
+  .toast {
+    position: fixed; bottom: 24px; right: 24px;
+    background: var(--navy-700);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 13px 18px;
+    font-size: 12px; color: var(--text-primary);
+    display: flex; align-items: center; gap: 10px;
+    z-index: 200;
+    opacity: 0; transform: translateY(10px);
+    transition: all 0.25s;
+    pointer-events: none;
+  }
+  .toast.show { opacity: 1; transform: translateY(0); }
+  .toast i { color: var(--green); }
+
+  /* ── HEADER ACTION BAR ── */
+  .action-bar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; gap: 12px; }
+  .action-bar-left { flex: 1; }
+
+  /* ── LAB RESULT TAG ── */
+  .result-tag { font-size: 11px; font-weight: 500; }
+  .result-normal { color: var(--green); }
+  .result-abnormal { color: var(--red); }
+  .result-pending { color: var(--text-muted); }
+
+  /* ── QUICK ACTIONS (dashboard) ── */
+  .quick-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 24px; }
+  .qa-card {
+    background: var(--navy-700);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 14px;
+    display: flex; flex-direction: column; align-items: center; gap: 8px;
+    cursor: pointer; transition: all 0.15s;
+    text-align: center;
+  }
+  .qa-card:hover { border-color: var(--blue-500); background: rgba(37,99,235,0.07); }
+  .qa-card i { font-size: 22px; color: var(--blue-400); }
+  .qa-card span { font-size: 11px; color: var(--text-secondary); }
+
+  /* ── MINI CHART (dashboard) ── */
+  .mini-chart { height: 4px; border-radius: 99px; background: var(--navy-600); overflow: hidden; margin-top: 6px; }
+  .mini-fill { height: 100%; border-radius: 99px; }
+
+  .divider { height: 1px; background: var(--border); margin: 18px 0; }
+
+  @media (max-width: 768px) {
+    .sidebar { display: none; }
+    .stat-grid { grid-template-columns: 1fr 1fr; }
+    .two-col { grid-template-columns: 1fr; }
+    .quick-grid { grid-template-columns: 1fr 1fr; }
+    .info-grid { grid-template-columns: 1fr 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- APP SHELL -->
+<div class="app">
+
+  <!-- SIDEBAR -->
+  <nav class="sidebar">
+    <div class="sidebar-brand">
+      <div class="brand-icon"><i class="ti ti-heartbeat"></i></div>
+      <div class="brand-text">
+        <div class="brand-name">MediCare</div>
+        <div class="brand-sub">Patient Portal v2.1</div>
+      </div>
+    </div>
+
+    <div class="nav-section-label">Overview</div>
+    <div class="nav-item active" data-page="dashboard">
+      <i class="ti ti-layout-dashboard"></i> Dashboard
+    </div>
+    <div class="nav-item" data-page="profile">
+      <i class="ti ti-user-circle"></i> My Profile
+    </div>
+
+    <div class="nav-section-label">Clinical</div>
+    <div class="nav-item" data-page="appointments">
+      <i class="ti ti-calendar-event"></i> Appointments
+      <span class="nav-badge" id="appt-badge">3</span>
+    </div>
+    <div class="nav-item" data-page="prescriptions">
+      <i class="ti ti-pill"></i> Prescriptions
+    </div>
+    <div class="nav-item" data-page="labtests">
+      <i class="ti ti-flask"></i> Lab Tests
+    </div>
+    <div class="nav-item" data-page="healthevents">
+      <i class="ti ti-activity"></i> Health Events
+    </div>
+
+    <div style="margin-top:auto;padding:16px 20px;border-top:1px solid var(--border);margin-top:20px;">
+      <div class="nav-item" style="padding:0;color:var(--text-muted);font-size:11px;">
+        <i class="ti ti-user" style="font-size:14px;"></i>
+        Mbali Dlamini · Patient
+      </div>
+    </div>
+  </nav>
+
+  <!-- MAIN CONTENT -->
+  <div class="main">
+    <!-- TOPBAR -->
+    <div class="topbar">
+      <div class="topbar-left">
+        <span class="page-title" id="topbar-title">Dashboard</span>
+      </div>
+      <div class="topbar-right">
+        <div class="icon-btn" title="Notifications">
+          <i class="ti ti-bell"></i>
+          <div class="notif-dot"></div>
+        </div>
+        <div class="icon-btn" title="Settings">
+          <i class="ti ti-settings"></i>
+        </div>
+        <div class="avatar-btn" title="Mbali Dlamini">JD</div>
+      </div>
+    </div>
+
+    <!-- CONTENT -->
+    <div class="content-area">
+
+      <!-- ═══ DASHBOARD ═══ -->
+      <div class="page active" id="page-dashboard">
+        <div class="stat-grid">
+          <div class="stat-card">
+            <div class="stat-top">
+              <span class="stat-label">Appointments</span>
+              <div class="stat-icon blue"><i class="ti ti-calendar"></i></div>
+            </div>
+            <div class="stat-value" id="dash-appt-count">3</div>
+            <div class="stat-sub">upcoming this month</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-top">
+              <span class="stat-label">Prescriptions</span>
+              <div class="stat-icon amber"><i class="ti ti-pill"></i></div>
+            </div>
+            <div class="stat-value" id="dash-rx-count">5</div>
+            <div class="stat-sub">2 require refill</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-top">
+              <span class="stat-label">Lab Tests</span>
+              <div class="stat-icon green"><i class="ti ti-flask"></i></div>
+            </div>
+            <div class="stat-value" id="dash-lab-count">4</div>
+            <div class="stat-sub">1 result pending</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-top">
+              <span class="stat-label">Health Events</span>
+              <div class="stat-icon red"><i class="ti ti-activity"></i></div>
+            </div>
+            <div class="stat-value" id="dash-event-count">4</div>
+            <div class="stat-sub">logged this year</div>
+          </div>
+        </div>
+
+        <div class="quick-grid">
+          <div class="qa-card" onclick="navigate('appointments'); openModal('appt-modal')">
+            <i class="ti ti-calendar-plus"></i>
+            <span>Book appointment</span>
+          </div>
+          <div class="qa-card" onclick="navigate('prescriptions'); openModal('rx-modal')">
+            <i class="ti ti-prescription"></i>
+            <span>Add prescription</span>
+          </div>
+          <div class="qa-card" onclick="navigate('labtests'); openModal('lab-modal')">
+            <i class="ti ti-test-pipe"></i>
+            <span>Request lab test</span>
+          </div>
+          <div class="qa-card" onclick="navigate('healthevents'); openModal('event-modal')">
+            <i class="ti ti-urgent"></i>
+            <span>Log health event</span>
+          </div>
+        </div>
+
+        <div class="two-col">
+          <div class="card">
+            <div class="section-hd">
+              <span class="section-title">Upcoming appointments</span>
+              <button class="link-btn" onclick="navigate('appointments')">View all →</button>
+            </div>
+            <div class="appt-list" id="dash-appts"></div>
+          </div>
+          <div class="card">
+            <div class="section-hd">
+              <span class="section-title">Active medications</span>
+              <button class="link-btn" onclick="navigate('prescriptions')">Manage →</button>
+            </div>
+            <div class="rx-list" id="dash-rx"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ═══ APPOINTMENTS ═══ -->
+      <div class="page" id="page-appointments">
+        <div class="action-bar">
+          <div class="action-bar-left">
+            <div class="search-wrap">
+              <i class="ti ti-search search-icon"></i>
+              <input type="text" class="search-input" placeholder="Search by doctor, clinic…" oninput="filterAppointments(this.value)">
+            </div>
+          </div>
+          <button class="btn-primary" onclick="openModal('appt-modal')"><i class="ti ti-plus"></i> Book appointment</button>
+        </div>
+
+        <div class="tab-bar">
+          <div class="tab active" onclick="filterApptTab('all', this)">All</div>
+          <div class="tab" onclick="filterApptTab('Confirmed', this)">Confirmed</div>
+          <div class="tab" onclick="filterApptTab('Pending', this)">Pending</div>
+          <div class="tab" onclick="filterApptTab('Scheduled', this)">Scheduled</div>
+          <div class="tab" onclick="filterApptTab('Cancelled', this)">Cancelled</div>
+        </div>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Doctor</th>
+                <th>Date</th>
+                <th>Time</th>
+                <th>Location</th>
+                <th>Status</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="appt-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ═══ PRESCRIPTIONS ═══ -->
+      <div class="page" id="page-prescriptions">
+        <div class="action-bar">
+          <div class="action-bar-left">
+            <div class="search-wrap">
+              <i class="ti ti-search search-icon"></i>
+              <input type="text" class="search-input" placeholder="Search medications…" oninput="filterRx(this.value)">
+            </div>
+          </div>
+          <button class="btn-primary" onclick="openModal('rx-modal')"><i class="ti ti-plus"></i> Add prescription</button>
+        </div>
+        <div class="card">
+          <div class="rx-list" id="rx-list"></div>
+        </div>
+      </div>
+
+      <!-- ═══ LAB TESTS ═══ -->
+      <div class="page" id="page-labtests">
+        <div class="action-bar">
+          <div class="action-bar-left">
+            <div class="search-wrap">
+              <i class="ti ti-search search-icon"></i>
+              <input type="text" class="search-input" placeholder="Search tests…" oninput="filterLab(this.value)">
+            </div>
+          </div>
+          <button class="btn-primary" onclick="openModal('lab-modal')"><i class="ti ti-plus"></i> Request test</button>
+        </div>
+        <div class="tab-bar">
+          <div class="tab active" onclick="filterLabTab('all', this)">All</div>
+          <div class="tab" onclick="filterLabTab('Complete', this)">Complete</div>
+          <div class="tab" onclick="filterLabTab('Pending', this)">Pending</div>
+          <div class="tab" onclick="filterLabTab('Review', this)">Needs review</div>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Test name</th>
+                <th>Test date</th>
+                <th>Result</th>
+                <th>Status</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="lab-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ═══ HEALTH EVENTS ═══ -->
+      <div class="page" id="page-healthevents">
+        <div class="action-bar">
+          <div></div>
+          <button class="btn-primary" onclick="openModal('event-modal')"><i class="ti ti-plus"></i> Log event</button>
+        </div>
+        <div class="tab-bar">
+          <div class="tab active" onclick="filterEventTab('all', this)">All events</div>
+          <div class="tab" onclick="filterEventTab('Emergency', this)">Emergencies</div>
+          <div class="tab" onclick="filterEventTab('Childcare', this)">Childcare</div>
+          <div class="tab" onclick="filterEventTab('General', this)">General</div>
+        </div>
+        <div class="card">
+          <div class="timeline" id="event-timeline"></div>
+        </div>
+      </div>
+
+      <!-- ═══ PROFILE ═══ -->
+      <div class="page" id="page-profile">
+        <div class="profile-hero">
+          <div class="big-avatar">JD</div>
+          <div>
+            <div class="profile-name">Mbali Dlamini</div>
+            <div class="profile-role">Patient · MRN: MR-2025-00847</div>
+            <div class="profile-chips">
+              <span class="chip chip-green">Active</span>
+              <span class="chip chip-blue">Female</span>
+              <span class="chip chip-gray">DOB: 14 Mar 1985</span>
+            </div>
+          </div>
+          <div style="margin-left:auto;">
+            <button class="btn-ghost" onclick="openModal('profile-modal')"><i class="ti ti-edit"></i> Edit profile</button>
+          </div>
+        </div>
+
+        <div class="two-col">
+          <div class="card">
+            <div class="section-hd"><span class="section-title">Personal information</span></div>
+            <div class="info-grid" style="grid-template-columns:1fr 1fr;">
+              <div class="info-item"><label>First name</label><span id="p-fname">Mbali</span></div>
+              <div class="info-item"><label>Last name</label><span id="p-lname">Dlamini</span></div>
+              <div class="info-item"><label>Date of birth</label><span id="p-dob">14 March 1985</span></div>
+              <div class="info-item"><label>Gender</label><span id="p-gender">Female</span></div>
+              <div class="info-item"><label>Phone</label><span id="p-phone">+27 82 555 0147</span></div>
+              <div class="info-item"><label>Medical record no.</label><span id="p-mrn">MR-2025-00847</span></div>
+            </div>
+            <div class="divider"></div>
+            <div class="info-item"><label>Address</label><span id="p-address">12 Oak Avenue, Gardens, Cape Town, 8001</span></div>
+          </div>
+          <div class="card">
+            <div class="section-hd"><span class="section-title">Account information</span></div>
+            <div class="info-grid" style="grid-template-columns:1fr;">
+              <div class="info-item"><label>Username</label><span id="p-username">Mbali.dlamini</span></div>
+              <div class="info-item"><label>Email</label><span id="p-email">j.dlamini@email.co.za</span></div>
+              <div class="info-item"><label>Role</label><span>Patient</span></div>
+            </div>
+            <div class="divider"></div>
+            <div class="section-title" style="margin-bottom:10px;">Summary</div>
+            <div class="info-grid" style="grid-template-columns:1fr 1fr 1fr;">
+              <div class="info-item"><label>Appointments</label><span id="p-appt-c">3</span></div>
+              <div class="info-item"><label>Prescriptions</label><span id="p-rx-c">5</span></div>
+              <div class="info-item"><label>Lab Tests</label><span id="p-lab-c">4</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /content-area -->
+  </div><!-- /main -->
+</div><!-- /app -->
+
+<!-- ═══ MODALS ═══ -->
+
+<!-- APPOINTMENT MODAL -->
+<div class="modal-backdrop" id="appt-modal">
+  <div class="modal">
+    <div class="modal-hd">
+      <span class="modal-title">Book appointment</span>
+      <button class="close-btn" onclick="closeModal('appt-modal')"><i class="ti ti-x"></i></button>
+    </div>
+    <div class="form-grid">
+      <div class="form-group form-full">
+        <label class="form-label">Doctor name</label>
+        <input class="form-input" id="f-appt-doctor" placeholder="e.g. Dr. Ndlovu">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Appointment date</label>
+        <input class="form-input" id="f-appt-date" type="date">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Time</label>
+        <input class="form-input" id="f-appt-time" type="time">
+      </div>
+      <div class="form-group form-full">
+        <label class="form-label">Clinic location</label>
+        <input class="form-input" id="f-appt-location" placeholder="e.g. Groote Schuur Hospital">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Status</label>
+        <select class="form-input" id="f-appt-status">
+          <option>Scheduled</option>
+          <option>Confirmed</option>
+          <option>Pending</option>
+          <option>Cancelled</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-actions" style="margin-top:18px;">
+      <button class="btn-primary" onclick="addAppointment()">Confirm booking</button>
+      <button class="btn-ghost" onclick="closeModal('appt-modal')">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- PRESCRIPTION MODAL -->
+<div class="modal-backdrop" id="rx-modal">
+  <div class="modal">
+    <div class="modal-hd">
+      <span class="modal-title">Add prescription</span>
+      <button class="close-btn" onclick="closeModal('rx-modal')"><i class="ti ti-x"></i></button>
+    </div>
+    <div class="form-grid">
+      <div class="form-group form-full">
+        <label class="form-label">Medication name</label>
+        <input class="form-input" id="f-rx-name" placeholder="e.g. Metformin 500mg">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Dosage</label>
+        <input class="form-input" id="f-rx-dosage" placeholder="e.g. 1 tablet">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Reminder time</label>
+        <input class="form-input" id="f-rx-time" type="time">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Start date</label>
+        <input class="form-input" id="f-rx-start" type="date">
+      </div>
+      <div class="form-group">
+        <label class="form-label">End date</label>
+        <input class="form-input" id="f-rx-end" type="date">
+      </div>
+    </div>
+    <div class="form-actions" style="margin-top:18px;">
+      <button class="btn-primary" onclick="addPrescription()">Save prescription</button>
+      <button class="btn-ghost" onclick="closeModal('rx-modal')">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- LAB TEST MODAL -->
+<div class="modal-backdrop" id="lab-modal">
+  <div class="modal">
+    <div class="modal-hd">
+      <span class="modal-title">Request lab test</span>
+      <button class="close-btn" onclick="closeModal('lab-modal')"><i class="ti ti-x"></i></button>
+    </div>
+    <div class="form-grid">
+      <div class="form-group form-full">
+        <label class="form-label">Test name</label>
+        <input class="form-input" id="f-lab-name" placeholder="e.g. HbA1c, Full Blood Count">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Test date</label>
+        <input class="form-input" id="f-lab-date" type="date">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Result</label>
+        <input class="form-input" id="f-lab-result" placeholder="Leave blank if pending">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Status</label>
+        <select class="form-input" id="f-lab-status">
+          <option>Pending</option>
+          <option>Complete</option>
+          <option>Review</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-actions" style="margin-top:18px;">
+      <button class="btn-primary" onclick="addLabTest()">Submit request</button>
+      <button class="btn-ghost" onclick="closeModal('lab-modal')">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- HEALTH EVENT MODAL -->
+<div class="modal-backdrop" id="event-modal">
+  <div class="modal">
+    <div class="modal-hd">
+      <span class="modal-title">Log health event</span>
+      <button class="close-btn" onclick="closeModal('event-modal')"><i class="ti ti-x"></i></button>
+    </div>
+    <div class="form-grid">
+      <div class="form-group">
+        <label class="form-label">Event type</label>
+        <select class="form-input" id="f-event-type">
+          <option>General</option>
+          <option>Emergency</option>
+          <option>Childcare</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Emergency level (1–5)</label>
+        <select class="form-input" id="f-event-level">
+          <option>1</option><option>2</option><option>3</option><option>4</option><option>5</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Event date</label>
+        <input class="form-input" id="f-event-date" type="date">
+      </div>
+      <div class="form-group form-full">
+        <label class="form-label">Notes / childcare notes</label>
+        <input class="form-input" id="f-event-notes" placeholder="Additional details…">
+      </div>
+    </div>
+    <div class="form-actions" style="margin-top:18px;">
+      <button class="btn-primary" onclick="addHealthEvent()">Log event</button>
+      <button class="btn-ghost" onclick="closeModal('event-modal')">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- PROFILE EDIT MODAL -->
+<div class="modal-backdrop" id="profile-modal">
+  <div class="modal">
+    <div class="modal-hd">
+      <span class="modal-title">Edit profile</span>
+      <button class="close-btn" onclick="closeModal('profile-modal')"><i class="ti ti-x"></i></button>
+    </div>
+    <div class="form-grid">
+      <div class="form-group">
+        <label class="form-label">First name</label>
+        <input class="form-input" id="f-p-fname" value="Mbali">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Last name</label>
+        <input class="form-input" id="f-p-lname" value="Dlamini">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Date of birth</label>
+        <input class="form-input" id="f-p-dob" type="date" value="1985-03-14">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Gender</label>
+        <select class="form-input" id="f-p-gender">
+          <option selected>Female</option><option>Male</option><option>Other</option><option>Prefer not to say</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Phone number</label>
+        <input class="form-input" id="f-p-phone" value="+27 82 555 0147">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Email</label>
+        <input class="form-input" id="f-p-email" value="j.dlamini@email.co.za">
+      </div>
+      <div class="form-group form-full">
+        <label class="form-label">Address</label>
+        <input class="form-input" id="f-p-address" value="12 Oak Avenue, Gardens, Cape Town, 8001">
+      </div>
+    </div>
+    <div class="form-actions" style="margin-top:18px;">
+      <button class="btn-primary" onclick="saveProfile()">Save changes</button>
+      <button class="btn-ghost" onclick="closeModal('profile-modal')">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast">
+  <i class="ti ti-check"></i>
+  <span id="toast-msg">Saved successfully</span>
+</div>
+
+<script>
+/* ══════════════════════════════════════════
+   DATA STORE
+══════════════════════════════════════════ */
+const db = {
+  appointments: [
+    { id: 1, doctor: 'Dr. S. Ndlovu', date: '2025-05-19', time: '09:30', location: 'Groote Schuur Hospital', status: 'Confirmed' },
+    { id: 2, doctor: 'Dr. A. Patel', date: '2025-05-21', time: '14:00', location: 'Netcare Christiaan Barnard', status: 'Pending' },
+    { id: 3, doctor: 'Dr. M. van Wyk', date: '2025-05-28', time: '11:15', location: 'Mediclinic N1 City', status: 'Scheduled' },
+  ],
+  prescriptions: [
+    { id: 1, name: 'Metformin 500mg', dosage: '1 tablet · Daily', time: '08:00', start: '2025-05-12', end: '2025-08-12', pct: 60 },
+    { id: 2, name: 'Amlodipine 5mg', dosage: '1 tablet · Daily', time: '20:00', start: '2025-04-01', end: '2025-10-01', pct: 30 },
+    { id: 3, name: 'Atorvastatin 10mg', dosage: '1 tablet · Nightly', time: '22:00', start: '2025-03-15', end: '2025-09-15', pct: 45 },
+    { id: 4, name: 'Vitamin D3 1000IU', dosage: '1 capsule · Daily', time: '08:00', start: '2025-01-01', end: '2025-12-31', pct: 40 },
+    { id: 5, name: 'Aspirin 75mg', dosage: '1 tablet · Daily', time: '07:00', start: '2025-04-10', end: '2025-07-10', pct: 75 },
+  ],
+  labTests: [
+    { id: 1, name: 'HbA1c', date: '2025-05-10', result: '6.2%', status: 'Complete' },
+    { id: 2, name: 'Full Blood Count', date: '2025-05-08', result: '—', status: 'Pending' },
+    { id: 3, name: 'Lipid Panel', date: '2025-04-02', result: 'Normal', status: 'Complete' },
+    { id: 4, name: 'Urine Culture', date: '2025-03-15', result: 'Abnormal', status: 'Review' },
+  ],
+  healthEvents: [
+    { id: 1, type: 'Emergency', level: 3, date: '2025-05-12', notes: 'Presented with chest pain, ECG normal, discharged after observation.' },
+    { id: 2, type: 'Childcare', level: 1, date: '2025-05-05', notes: 'Routine paediatric check-up for infant. All milestones met.' },
+    { id: 3, type: 'General', level: 1, date: '2025-04-28', notes: 'Annual wellness screening. Blood pressure slightly elevated.' },
+    { id: 4, type: 'Emergency', level: 2, date: '2025-04-10', notes: 'Allergic reaction to penicillin. Administered antihistamine.' },
+  ],
+  profile: {
+    fname: 'Mbali', lname: 'Dlamini', dob: '14 March 1985', gender: 'Female',
+    phone: '+27 82 555 0147', email: 'j.dlamini@email.co.za',
+    address: '12 Oak Avenue, Gardens, Cape Town, 8001',
+    mrn: 'MR-2025-00847', username: 'Mbali.dlamini'
+  }
+};
+
+/* ══════════════════════════════════════════
+   NAVIGATION
+══════════════════════════════════════════ */
+function navigate(page) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('page-' + page).classList.add('active');
+  const navEl = document.querySelector(`.nav-item[data-page="${page}"]`);
+  if (navEl) navEl.classList.add('active');
+  const titles = { dashboard:'Dashboard', appointments:'Appointments', prescriptions:'Prescriptions', labtests:'Lab Tests', healthevents:'Health Events', profile:'My Profile' };
+  document.getElementById('topbar-title').textContent = titles[page] || page;
+  // Reset filters
+  document.querySelectorAll('.tab-bar .tab').forEach(t => t.classList.remove('active'));
+  const firstTab = document.querySelector(`#page-${page} .tab`);
+  if (firstTab) firstTab.classList.add('active');
+}
+
+document.querySelectorAll('.nav-item[data-page]').forEach(item => {
+  item.addEventListener('click', () => navigate(item.dataset.page));
+});
+
+/* ══════════════════════════════════════════
+   MODALS
+══════════════════════════════════════════ */
+function openModal(id) {
+  document.getElementById(id).classList.add('open');
+}
+function closeModal(id) {
+  document.getElementById(id).classList.remove('open');
+}
+document.querySelectorAll('.modal-backdrop').forEach(m => {
+  m.addEventListener('click', e => { if (e.target === m) m.classList.remove('open'); });
+});
+
+/* ══════════════════════════════════════════
+   TOAST
+══════════════════════════════════════════ */
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  document.getElementById('toast-msg').textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2800);
+}
+
+/* ══════════════════════════════════════════
+   HELPERS
+══════════════════════════════════════════ */
+function statusChip(s) {
+  const map = { Confirmed:'chip-green', Pending:'chip-amber', Scheduled:'chip-blue', Cancelled:'chip-red', Complete:'chip-green', Review:'chip-red', General:'chip-blue', Emergency:'chip-red', Childcare:'chip-amber' };
+  return `<span class="chip ${map[s]||'chip-gray'}">${s}</span>`;
+}
+function fmtDate(d) {
+  if (!d) return '—';
+  const dt = new Date(d + 'T00:00:00');
+  return dt.toLocaleDateString('en-ZA', { day: 'numeric', month: 'short', year: 'numeric' });
+}
+function levelDot(lvl) {
+  if (lvl >= 3) return 'red';
+  if (lvl === 2) return 'amber';
+  return 'blue';
+}
+function eventTypeColor(t) {
+  return t === 'Emergency' ? 'red' : t === 'Childcare' ? 'amber' : 'blue';
+}
+function eventIcon(t) {
+  return t === 'Emergency' ? 'ti-alert-triangle' : t === 'Childcare' ? 'ti-baby-carriage' : 'ti-stethoscope';
+}
+
+/* ══════════════════════════════════════════
+   RENDER FUNCTIONS
+══════════════════════════════════════════ */
+function renderDashboard() {
+  document.getElementById('dash-appt-count').textContent = db.appointments.length;
+  document.getElementById('dash-rx-count').textContent = db.prescriptions.length;
+  document.getElementById('dash-lab-count').textContent = db.labTests.length;
+  document.getElementById('dash-event-count').textContent = db.healthEvents.length;
+  document.getElementById('appt-badge').textContent = db.appointments.filter(a => a.status !== 'Cancelled').length;
+
+  // Upcoming appointments (first 3)
+  const apptEl = document.getElementById('dash-appts');
+  const upcoming = db.appointments.slice(0, 3);
+  apptEl.innerHTML = upcoming.length ? upcoming.map(a => `
+    <div class="appt-item">
+      <div class="appt-dot ${a.status === 'Confirmed' ? 'green' : a.status === 'Pending' ? 'amber' : 'blue'}"></div>
+      <div class="appt-info">
+        <div class="appt-name">${a.doctor}</div>
+        <div class="appt-sub">${a.location}</div>
+      </div>
+      <div class="appt-time">${fmtDate(a.date)} · ${a.time}</div>
+    </div>`).join('') : '<div class="empty-state"><i class="ti ti-calendar-off"></i><p>No upcoming appointments</p></div>';
+
+  // Active medications (first 3)
+  const rxEl = document.getElementById('dash-rx');
+  const meds = db.prescriptions.slice(0, 3);
+  rxEl.innerHTML = meds.map(r => `
+    <div class="rx-item">
+      <div class="rx-icon"><i class="ti ti-pill"></i></div>
+      <div class="rx-body" style="flex:1">
+        <div class="rx-name">${r.name}</div>
+        <div class="rx-meta">${r.dosage} · ${r.time}</div>
+        <div class="progress-bar"><div class="progress-fill" style="width:${r.pct}%"></div></div>
+      </div>
+    </div>`).join('');
+
+  // Profile counters
+  document.getElementById('p-appt-c').textContent = db.appointments.length;
+  document.getElementById('p-rx-c').textContent = db.prescriptions.length;
+  document.getElementById('p-lab-c').textContent = db.labTests.length;
+}
+
+let apptFilter = 'all', apptSearch = '';
+function renderAppointments() {
+  const tbody = document.getElementById('appt-tbody');
+  let list = db.appointments;
+  if (apptFilter !== 'all') list = list.filter(a => a.status === apptFilter);
+  if (apptSearch) list = list.filter(a => (a.doctor + a.location).toLowerCase().includes(apptSearch.toLowerCase()));
+  tbody.innerHTML = list.length ? list.map(a => `
+    <tr>
+      <td class="td-name">${a.doctor}</td>
+      <td>${fmtDate(a.date)}</td>
+      <td>${a.time}</td>
+      <td>${a.location}</td>
+      <td>${statusChip(a.status)}</td>
+      <td><button class="btn-danger" style="padding:4px 10px;font-size:10px;" onclick="deleteAppointment(${a.id})">Cancel</button></td>
+    </tr>`).join('') : `<tr><td colspan="6"><div class="empty-state"><i class="ti ti-calendar-off"></i><p>No appointments found</p></div></td></tr>`;
+}
+
+function filterApptTab(val, el) {
+  apptFilter = val;
+  document.querySelectorAll('#page-appointments .tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  renderAppointments();
+}
+function filterAppointments(val) { apptSearch = val; renderAppointments(); }
+
+let rxSearch = '';
+function renderPrescriptions() {
+  const el = document.getElementById('rx-list');
+  let list = db.prescriptions;
+  if (rxSearch) list = list.filter(r => r.name.toLowerCase().includes(rxSearch.toLowerCase()));
+  el.innerHTML = list.length ? list.map(r => `
+    <div class="rx-item">
+      <div class="rx-icon"><i class="ti ti-pill"></i></div>
+      <div class="rx-body" style="flex:1">
+        <div style="display:flex;align-items:center;justify-content:space-between">
+          <div class="rx-name">${r.name}</div>
+          <span class="chip ${r.pct > 70 ? 'chip-amber' : 'chip-green'}">${r.pct > 70 ? 'Refill soon' : 'Active'}</span>
+        </div>
+        <div class="rx-meta">${r.dosage} · Reminder: ${r.time}</div>
+        <div class="rx-dates">${fmtDate(r.start)} → ${fmtDate(r.end)}</div>
+        <div class="progress-bar"><div class="progress-fill" style="width:${r.pct}%"></div></div>
+      </div>
+      <button onclick="deleteRx(${r.id})" style="margin-left:12px;background:none;border:none;color:var(--text-muted);cursor:pointer;font-size:16px;"><i class="ti ti-trash"></i></button>
+    </div>`).join('') : '<div class="empty-state"><i class="ti ti-pill"></i><p>No prescriptions found</p></div>';
+}
+function filterRx(val) { rxSearch = val; renderPrescriptions(); }
+
+let labFilter = 'all', labSearch = '';
+function renderLabTests() {
+  const tbody = document.getElementById('lab-tbody');
+  let list = db.labTests;
+  if (labFilter !== 'all') list = list.filter(l => l.status === labFilter);
+  if (labSearch) list = list.filter(l => l.name.toLowerCase().includes(labSearch.toLowerCase()));
+  tbody.innerHTML = list.length ? list.map(l => `
+    <tr>
+      <td class="td-name">${l.name}</td>
+      <td>${fmtDate(l.date)}</td>
+      <td><span class="result-tag ${l.result === '—' ? 'result-pending' : l.result === 'Abnormal' ? 'result-abnormal' : 'result-normal'}">${l.result}</span></td>
+      <td>${statusChip(l.status)}</td>
+      <td><button onclick="deleteLab(${l.id})" style="background:none;border:none;color:var(--text-muted);cursor:pointer;font-size:16px;"><i class="ti ti-trash"></i></button></td>
+    </tr>`).join('') : `<tr><td colspan="5"><div class="empty-state"><i class="ti ti-flask-off"></i><p>No lab tests found</p></div></td></tr>`;
+}
+function filterLabTab(val, el) {
+  labFilter = val;
+  document.querySelectorAll('#page-labtests .tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  renderLabTests();
+}
+function filterLab(val) { labSearch = val; renderLabTests(); }
+
+let eventFilter = 'all';
+function renderHealthEvents() {
+  const el = document.getElementById('event-timeline');
+  let list = db.healthEvents;
+  if (eventFilter !== 'all') list = list.filter(e => e.type === eventFilter);
+  el.innerHTML = list.length ? list.map(e => `
+    <div class="tl-item">
+      <div class="tl-dot ${eventTypeColor(e.type)}"><i class="ti ${eventIcon(e.type)}"></i></div>
+      <div class="tl-body">
+        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+          <span class="tl-title">${e.type === 'Emergency' ? 'Emergency event' : e.type === 'Childcare' ? 'Childcare note' : 'General event'}</span>
+          <span class="chip ${e.type === 'Emergency' ? 'chip-red' : e.type === 'Childcare' ? 'chip-amber' : 'chip-blue'}">Level ${e.level}</span>
+          <button onclick="deleteEvent(${e.id})" style="margin-left:auto;background:none;border:none;color:var(--text-muted);cursor:pointer;font-size:14px;"><i class="ti ti-trash"></i></button>
+        </div>
+        <div class="tl-meta">${e.type} · ${fmtDate(e.date)}</div>
+        ${e.notes ? `<div class="tl-notes">${e.notes}</div>` : ''}
+      </div>
+    </div>`).join('') : '<div class="empty-state"><i class="ti ti-activity-off"></i><p>No health events found</p></div>';
+}
+function filterEventTab(val, el) {
+  eventFilter = val;
+  document.querySelectorAll('#page-healthevents .tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  renderHealthEvents();
+}
+
+/* ══════════════════════════════════════════
+   ADD / DELETE
+══════════════════════════════════════════ */
+function addAppointment() {
+  const d = document.getElementById('f-appt-doctor').value.trim();
+  const dt = document.getElementById('f-appt-date').value;
+  const tm = document.getElementById('f-appt-time').value;
+  const loc = document.getElementById('f-appt-location').value.trim();
+  const st = document.getElementById('f-appt-status').value;
+  if (!d || !dt || !tm || !loc) return alert('Please fill in all fields.');
+  db.appointments.push({ id: Date.now(), doctor: d, date: dt, time: tm, location: loc, status: st });
+  closeModal('appt-modal');
+  ['f-appt-doctor','f-appt-date','f-appt-time','f-appt-location'].forEach(id => document.getElementById(id).value = '');
+  renderAll(); showToast('Appointment booked successfully');
+}
+
+function deleteAppointment(id) {
+  db.appointments = db.appointments.filter(a => a.id !== id);
+  renderAll(); showToast('Appointment cancelled');
+}
+
+function addPrescription() {
+  const n = document.getElementById('f-rx-name').value.trim();
+  const d = document.getElementById('f-rx-dosage').value.trim();
+  const t = document.getElementById('f-rx-time').value;
+  const s = document.getElementById('f-rx-start').value;
+  const e = document.getElementById('f-rx-end').value;
+  if (!n || !d) return alert('Please fill in medication name and dosage.');
+  db.prescriptions.push({ id: Date.now(), name: n, dosage: d, time: t || '—', start: s, end: e, pct: 0 });
+  closeModal('rx-modal');
+  ['f-rx-name','f-rx-dosage','f-rx-time','f-rx-start','f-rx-end'].forEach(id => document.getElementById(id).value = '');
+  renderAll(); showToast('Prescription added');
+}
+
+function deleteRx(id) {
+  db.prescriptions = db.prescriptions.filter(r => r.id !== id);
+  renderAll(); showToast('Prescription removed');
+}
+
+function addLabTest() {
+  const n = document.getElementById('f-lab-name').value.trim();
+  const d = document.getElementById('f-lab-date').value;
+  const r = document.getElementById('f-lab-result').value.trim() || '—';
+  const s = document.getElementById('f-lab-status').value;
+  if (!n || !d) return alert('Please fill in test name and date.');
+  db.labTests.push({ id: Date.now(), name: n, date: d, result: r, status: s });
+  closeModal('lab-modal');
+  ['f-lab-name','f-lab-date','f-lab-result'].forEach(id => document.getElementById(id).value = '');
+  renderAll(); showToast('Lab test requested');
+}
+
+function deleteLab(id) {
+  db.labTests = db.labTests.filter(l => l.id !== id);
+  renderAll(); showToast('Lab test removed');
+}
+
+function addHealthEvent() {
+  const tp = document.getElementById('f-event-type').value;
+  const lv = document.getElementById('f-event-level').value;
+  const dt = document.getElementById('f-event-date').value;
+  const nt = document.getElementById('f-event-notes').value.trim();
+  if (!dt) return alert('Please select a date.');
+  db.healthEvents.unshift({ id: Date.now(), type: tp, level: parseInt(lv), date: dt, notes: nt });
+  closeModal('event-modal');
+  document.getElementById('f-event-notes').value = '';
+  renderAll(); showToast('Health event logged');
+}
+
+function deleteEvent(id) {
+  db.healthEvents = db.healthEvents.filter(e => e.id !== id);
+  renderAll(); showToast('Event removed');
+}
+
+function saveProfile() {
+  const p = db.profile;
+  p.fname = document.getElementById('f-p-fname').value;
+  p.lname = document.getElementById('f-p-lname').value;
+  p.gender = document.getElementById('f-p-gender').value;
+  p.phone = document.getElementById('f-p-phone').value;
+  p.email = document.getElementById('f-p-email').value;
+  p.address = document.getElementById('f-p-address').value;
+  const dobRaw = document.getElementById('f-p-dob').value;
+  if (dobRaw) p.dob = new Date(dobRaw + 'T00:00:00').toLocaleDateString('en-ZA', { day:'numeric', month:'long', year:'numeric' });
+  renderProfile();
+  closeModal('profile-modal');
+  showToast('Profile updated');
+}
+
+function renderProfile() {
+  const p = db.profile;
+  document.getElementById('p-fname').textContent = p.fname;
+  document.getElementById('p-lname').textContent = p.lname;
+  document.getElementById('p-dob').textContent = p.dob;
+  document.getElementById('p-gender').textContent = p.gender;
+  document.getElementById('p-phone').textContent = p.phone;
+  document.getElementById('p-mrn').textContent = p.mrn;
+  document.getElementById('p-address').textContent = p.address;
+  document.getElementById('p-username').textContent = p.username;
+  document.getElementById('p-email').textContent = p.email;
+}
+
+function renderAll() {
+  renderDashboard();
+  renderAppointments();
+  renderPrescriptions();
+  renderLabTests();
+  renderHealthEvents();
+  renderProfile();
+}
+
+// Boot
+renderAll();
+</script>
+</body>
+</html>
